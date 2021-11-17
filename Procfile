@@ -1,0 +1,1 @@
+web: sh setup.sh && streamlit run line_rental_compare_new_model.py
