@@ -1,4 +1,9 @@
-![unittest](https://github.com/knuthp/elvia_stats/workflows/unittest/badge.svg)
+<a href="https://github.com/knuthp/elvia_stats/actions?query=workflow%3Aunittest" target="_blank">
+    <img src="https://github.com/knuthp/elvia_stats/workflows/unittest/badge.svg" alt="Unittest">
+</a>
+<a href="https://codecov.io/gh/knuthp/elvia_stats" target="_blank">
+    <img src="https://img.shields.io/codecov/c/github/knuthp/elvia_stats?color=%2334D058" alt="Coverage">
+</a>
 
 ## Power Consumption Statistics for Norwegian Elvia
 Main focus is the new model for pricing power line rent (Nettleie). Norway will from 2022-01-01 have a new price model for line rental that is based on several factors in addition to consumption.
