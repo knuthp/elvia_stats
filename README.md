@@ -1,4 +1,4 @@
-
+![unittest](https://github.com/knuthp/elvia_stats/workflows/unittest/badge.svg)
 
 ## Power Consumption Statistics for Norwegian Elvia
 Main focus is the new model for pricing power line rent (Nettleie). Norway will from 2022-01-01 have a new price model for line rental that is based on several factors in addition to consumption.
