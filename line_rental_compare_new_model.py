@@ -2,7 +2,6 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-
 from elvia_stats import metervalueapi
 
 st.title("2022 Norwegian Power Consumption Line Rental Models")
