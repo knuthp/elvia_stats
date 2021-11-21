@@ -9,6 +9,8 @@ from requests_mock import Mocker
 
 from elvia_stats import metervalueapi
 
+ACCESS_TOKEN = "PYTEST_INJECTED"
+
 
 def test_retrieves_json(meter_value_mock: Mocker):
     data = metervalueapi.get_metervalues(2021)
@@ -45,6 +47,13 @@ def test_starttime_endtime_current_year(meter_value_mock: Mocker):
     assert delta.seconds < 5
 
 
+def test_token(meter_value_mock: Mocker):
+    metervalueapi.get_metervalues(2021)
+    # Only found headers on protected _request
+    request = meter_value_mock.request_history[0]._request
+    assert ACCESS_TOKEN in request.headers["Authorization"]
+
+
 def test_to_pandas(sample_json_data: Dict):
     df = metervalueapi.json_to_pandas(sample_json_data)
     assert df.iloc[0]["startTime"] == "2021-01-01T00:00:00+01:00"
@@ -72,3 +81,8 @@ def meter_value_mock(requests_mock: Mocker, sample_json_data: Dict):
         json=sample_json_data,
     )
     return requests_mock
+
+
+@pytest.fixture(autouse=True)
+def set_fake_token(monkeypatch):
+    monkeypatch.setenv("ELVIA_ACCESS_TOKEN", ACCESS_TOKEN)

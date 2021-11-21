@@ -6,11 +6,15 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()
-ACCESS_TOKEN = os.environ["ELVIA_ACCESS_TOKEN"]
-session = requests.session()
-session.headers["Authorization"] = f"Bearer {ACCESS_TOKEN}"
 METER_VALUES_URL = "https://elvia.azure-api.net/customer/metervalues/api/v1/metervalues"
+
+
+def _create_session() -> requests.Session:
+    load_dotenv()
+    ACCESS_TOKEN = os.environ["ELVIA_ACCESS_TOKEN"]
+    session = requests.session()
+    session.headers["Authorization"] = f"Bearer {ACCESS_TOKEN}"
+    return session
 
 
 def get_metervalues(year: int) -> Dict:
@@ -34,7 +38,9 @@ def get_metervalues(year: int) -> Dict:
         endTime = f"{year}-12-31T23:59:59+01:00"
     else:
         endTime = datetime.datetime.now().isoformat()
-    resp = session.get(f"{METER_VALUES_URL}?startTime={startTime}&endTime={endTime}")
+    resp = _create_session().get(
+        f"{METER_VALUES_URL}?startTime={startTime}&endTime={endTime}"
+    )
     resp.raise_for_status()
 
     return resp.json()
