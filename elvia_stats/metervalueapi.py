@@ -2,6 +2,7 @@ import datetime
 import os
 from typing import Dict
 
+import pandas as pd
 import requests
 from dotenv import load_dotenv
 
@@ -37,3 +38,31 @@ def get_metervalues(year: int) -> Dict:
     resp.raise_for_status()
 
     return resp.json()
+
+
+def json_to_pandas(json_data: dict) -> pd.DataFrame:
+    """Convert json dict to pandas Dataframe
+
+    Params:
+        dict: json as dict returned from metervalueapi
+
+    Returns>
+        Dataframe with usage per hour
+    """
+    return pd.json_normalize(
+        json_data["meteringpoints"][0], record_path=["metervalue", "timeSeries"]
+    )
+
+
+def fix_datetime(df: pd.DataFrame) -> pd.DataFrame:
+    """Fixes so startTime and endTime is tz aware datetime.
+
+    Experience trouble that pd.to_datetime() did not work.
+    We have a special step going via Norwegian tz.
+    """
+    df["startTimeStr"] = df["startTime"]
+    df["startTime"] = pd.to_datetime(df["startTime"], utc=True).dt.tz_convert(
+        "Europe/Oslo"
+    )
+    df["endTime"] = pd.to_datetime(df["endTime"], utc=True).dt.tz_convert("Europe/Oslo")
+    return df

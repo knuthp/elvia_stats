@@ -1,6 +1,7 @@
 import datetime
 import json
 from pathlib import Path
+from typing import Dict
 
 import dateutil.parser as parser
 import pytest
@@ -30,7 +31,7 @@ def test_stattime_endtime(meter_value_mock: Mocker):
     assert qs["endtime"][0] == "2020-12-31t23:59:59 01:00"
 
 
-def test_stattime_endtime_current_year(meter_value_mock: Mocker):
+def test_starttime_endtime_current_year(meter_value_mock: Mocker):
     metervalueapi.get_metervalues(2021)
 
     # Converts to lowercase, replace '+' with ' '
@@ -44,11 +45,30 @@ def test_stattime_endtime_current_year(meter_value_mock: Mocker):
     assert delta.seconds < 5
 
 
+def test_to_pandas(sample_json_data: Dict):
+    df = metervalueapi.json_to_pandas(sample_json_data)
+    assert df.iloc[0]["startTime"] == "2021-01-01T00:00:00+01:00"
+    assert df.iloc[-1]["endTime"] == "2021-01-02T23:00:00+01:00"
+
+
+def test_datetimefix(sample_json_data: Dict):
+    df = metervalueapi.json_to_pandas(sample_json_data)
+    df = metervalueapi.fix_datetime(df)
+
+    assert df["startTime"].dtype == "datetime64[ns, Europe/Oslo]"
+    assert df["endTime"].dtype == "datetime64[ns, Europe/Oslo]"
+
+
 @pytest.fixture
-def meter_value_mock(requests_mock: Mocker):
+def sample_json_data():
     json_str = Path("tests/metervalue_sample.json").read_text()
+    return json.loads(json_str)
+
+
+@pytest.fixture
+def meter_value_mock(requests_mock: Mocker, sample_json_data: Dict):
     requests_mock.get(
         metervalueapi.METER_VALUES_URL,
-        json=json.loads(json_str),
+        json=sample_json_data,
     )
     return requests_mock
