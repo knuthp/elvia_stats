@@ -1,10 +1,10 @@
 from typing import Dict
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import pytest
 
-from elvia_stats import models
-from elvia_stats import metervalueapi
+from elvia_stats import metervalueapi, models
 
 
 def test_extract_properties(default_data: pd.DataFrame):
@@ -33,4 +33,3 @@ def test_elvia_night_day(default_data: pd.DataFrame):
 def default_data(sample_json_data: Dict) -> pd.DataFrame:
     df = metervalueapi.json_to_pandas(sample_json_data)
     return metervalueapi.fix_datetime(df)
-

@@ -1,6 +1,8 @@
-import pytest
-from pathlib import Path
 import json
+from pathlib import Path
+
+import pytest
+
 
 @pytest.fixture
 def sample_json_data():
