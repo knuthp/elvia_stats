@@ -69,12 +69,6 @@ def test_datetimefix(sample_json_data: Dict):
 
 
 @pytest.fixture
-def sample_json_data():
-    json_str = Path("tests/metervalue_sample.json").read_text()
-    return json.loads(json_str)
-
-
-@pytest.fixture
 def meter_value_mock(requests_mock: Mocker, sample_json_data: Dict):
     requests_mock.get(
         metervalueapi.METER_VALUES_URL,

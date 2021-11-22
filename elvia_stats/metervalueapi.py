@@ -63,8 +63,12 @@ def json_to_pandas(json_data: dict) -> pd.DataFrame:
 def fix_datetime(df: pd.DataFrame) -> pd.DataFrame:
     """Fixes so startTime and endTime is tz aware datetime.
 
-    Experience trouble that pd.to_datetime() did not work.
-    We have a special step going via Norwegian tz.
+    Time is read as string. We should convert it to a datetime.
+
+
+    Using pd.to_datetime() did not return a timezone aware column type.
+    Seems to be a problem with summer/winter time hence we convert to UTC
+    and then to "Europe/Oslo" timezone instead of +01 or +02
     """
     df["startTimeStr"] = df["startTime"]
     df["startTime"] = pd.to_datetime(df["startTime"], utc=True).dt.tz_convert(
